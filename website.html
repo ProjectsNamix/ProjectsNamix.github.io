@@ -153,9 +153,71 @@
             animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            padding: 1rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            color: var(--text-pink);
+            margin: 0.5rem 0;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: var(--active-pink);
+        }
+
+        .add-product-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--text-pink);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
+        }
+
+        .add-product-btn:hover {
+            background: var(--active-pink);
         }
 
         .footer {
@@ -183,6 +245,23 @@
 
         .mobile-menu-btn i {
             color: var(--text-pink);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
@@ -225,6 +304,16 @@
 
             .section-divider {
                 transform: rotate(90deg);
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -294,12 +383,20 @@
             
             <div id="flores-content" class="content-section">
                 <h2>Flores Eternas</h2>
-                <p>Descubre nuestra colección de flores eternas...</p>
+                <div class="product-grid" id="flores-grid">
+                </div>
+                <button class="add-product-btn" onclick="showAddProductForm('flores')">
+                    <i class="fas fa-plus"></i>
+                </button>
             </div>
             
             <div id="bocaditos-content" class="content-section">
                 <h2>Bocaditos Especiales</h2>
-                <p>Explora nuestros deliciosos bocaditos...</p>
+                <div class="product-grid" id="bocaditos-grid">
+                </div>
+                <button class="add-product-btn" onclick="showAddProductForm('bocaditos')">
+                    <i class="fas fa-plus"></i>
+                </button>
             </div>
         </div>
     </main>
@@ -310,6 +407,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            loadInitialProducts();
+            
             const menuBtn = document.querySelector('.mobile-menu-btn');
             const navLinks = document.querySelector('.nav-links');
             
@@ -319,6 +418,61 @@
                 });
             }
         });
+
+        function createProductCard(imageUrl, title, price) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            card.innerHTML = `
+                <img src="${imageUrl}" alt="${title}" class="product-image">
+                <h3 class="product-title">${title}</h3>
+                <p class="product-price">S/. ${price}</p>
+            `;
+            
+            return card;
+        }
+
+        function showAddProductForm(section) {
+            const imageUrl = prompt('URL de la imagen:');
+            const title = prompt('Título del producto:');
+            const price = prompt('Precio del producto:');
+            
+            if (imageUrl && title && price) {
+                const grid = document.getElementById(`${section}-grid`);
+                const card = createProductCard(imageUrl, title, price);
+                grid.appendChild(card);
+            }
+        }
+
+        function loadInitialProducts() {
+            const floresGrid = document.getElementById('flores-grid');
+            const floresProducts = [
+                { url: '/api/placeholder/200/200', title: 'Rosa Eterna Roja', price: '59.90' },
+                { url: '/api/placeholder/200/200', title: 'Arreglo Premium', price: '89.90' },
+                { url: '/api/placeholder/200/200', title: 'Bouquet Deluxe', price: '129.90' },
+                { url: '/api/placeholder/200/200', title: 'Rosa Azul', price: '69.90' },
+                { url: '/api/placeholder/200/200', title: 'Arreglo Especial', price: '99.90' }
+            ];
+
+            const bocaditosGrid = document.getElementById('bocaditos-grid');
+            const bocaditosProducts = [
+                { url: '/api/placeholder/200/200', title: 'Alfajores x12', price: '24.90' },
+                { url: '/api/placeholder/200/200', title: 'Trufas x24', price: '34.90' },
+                { url: '/api/placeholder/200/200', title: 'Mini Brownies x15', price: '29.90' },
+                { url: '/api/placeholder/200/200', title: 'Cupcakes x6', price: '39.90' },
+                { url: '/api/placeholder/200/200', title: 'Cake Pops x8', price: '27.90' },
+            ];
+
+            floresProducts.forEach(product => {
+                const card = createProductCard(product.url, product.title, product.price);
+                floresGrid.appendChild(card);
+            });
+
+            bocaditosProducts.forEach(product => {
+                const card = createProductCard(product.url, product.title, product.price);
+                bocaditosGrid.appendChild(card);
+            });
+        }
 
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.content-section');
