@@ -246,6 +246,24 @@
             font-size: 1.5rem;
         }
 
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-pink);
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
         @keyframes fadeIn {
             from { 
                 opacity: 0;
@@ -362,7 +380,7 @@
     <nav class="navbar">
         <div class="nav-content">
             <div class="profile-mini">
-                <img src="images/profile.jpg" alt="Profile">
+                <img src="images/profile.jpg" alt="Profile" onerror="this.src='images/default-profile.jpg'">
                 <span>Encanto Eterno</span>
             </div>
             <div class="nav-menu">
@@ -424,12 +442,14 @@
             <div id="flores-content" class="content-section">
                 <h2>Flores Eternas</h2>
                 <div class="product-grid" id="flores-grid">
+                    <div class="loading">Cargando productos</div>
                 </div>
             </div>
             
             <div id="bocaditos-content" class="content-section">
                 <h2>Bocaditos Especiales</h2>
                 <div class="product-grid" id="bocaditos-grid">
+                    <div class="loading">Cargando productos</div>
                 </div>
             </div>
         </div>
@@ -452,7 +472,7 @@
                 });
                 
                 document.addEventListener('click', (e) => {
-                    if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+					if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
                         navLinks.classList.remove('active');
                     }
                 });
@@ -473,16 +493,25 @@
             img.src = imageUrl;
             img.className = 'product-image';
             img.alt = title;
+            
+            // Mejorar el manejo de errores de imagen
             img.onerror = function() {
-                this.src = '/api/placeholder/200/200';
+                this.src = 'images/placeholder.jpg';
                 this.alt = 'Imagen no disponible';
             };
-			
-        card.appendChild(img);
-            card.innerHTML += `
-                <h3 class="product-title">${title}</h3>
-                <p class="product-price">S/. ${price}</p>
-            `;
+            
+            card.appendChild(img);
+            
+            const titleEl = document.createElement('h3');
+            titleEl.className = 'product-title';
+            titleEl.textContent = title;
+            
+            const priceEl = document.createElement('p');
+            priceEl.className = 'product-price';
+            priceEl.textContent = `S/. ${price}`;
+            
+            card.appendChild(titleEl);
+            card.appendChild(priceEl);
             
             return card;
         }
@@ -490,11 +519,11 @@
         function loadInitialProducts() {
             const floresGrid = document.getElementById('flores-grid');
             const floresProducts = [
-                { url: '/api/placeholder/200/200', title: 'Rosa Eterna Roja', price: '59.90' },
-                { url: '/api/placeholder/200/200', title: 'Arreglo Premium', price: '89.90' },
-                { url: '/api/placeholder/200/200', title: 'Bouquet Deluxe', price: '129.90' },
-                { url: '/api/placeholder/200/200', title: 'Rosa Azul', price: '69.90' },
-                { url: '/api/placeholder/200/200', title: 'Arreglo Especial', price: '99.90' }
+                { url: 'images/flores/rosa-roja.jpg', title: 'Rosa Eterna Roja', price: '59.90' },
+                { url: 'images/flores/arreglo-premium.jpg', title: 'Arreglo Premium', price: '89.90' },
+                { url: 'images/flores/bouquet-deluxe.jpg', title: 'Bouquet Deluxe', price: '129.90' },
+                { url: 'images/flores/rosa-azul.jpg', title: 'Rosa Azul', price: '69.90' },
+                { url: 'images/flores/arreglo-especial.jpg', title: 'Arreglo Especial', price: '99.90' }
             ];
 
             const bocaditosGrid = document.getElementById('bocaditos-grid');
@@ -535,7 +564,6 @@
             const selectedSection = document.getElementById(`${sectionId}-content`);
             if (selectedSection) {
                 selectedSection.classList.add('active');
-                // Guardar la sección activa
                 localStorage.setItem('activeSection', sectionId);
             }
             
@@ -550,4 +578,4 @@
         }
     </script>
 </body>
-</html>			
+</html>
