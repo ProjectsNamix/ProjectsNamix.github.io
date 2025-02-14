@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,8 @@
             --main-bg: #FFE4E1;
             --text-pink: #8b5c5c;
             --active-pink: #6b3b3b;
+            --white-alpha: rgba(255, 255, 255, 0.3);
+            --transition-standard: all 0.3s ease;
         }
 
         * {
@@ -40,6 +42,7 @@
             top: 0;
             z-index: 1000;
             border-bottom: 2px solid var(--text-pink);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .nav-content {
@@ -56,6 +59,11 @@
             align-items: center;
             gap: 1rem;
             cursor: pointer;
+            transition: var(--transition-standard);
+        }
+
+        .profile-mini:hover {
+            transform: scale(1.05);
         }
 
         .profile-mini img {
@@ -64,6 +72,7 @@
             border-radius: 50%;
             border: 2px solid var(--text-pink);
             object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .nav-menu {
@@ -89,11 +98,13 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: opacity 0.3s ease;
+            transition: var(--transition-standard);
+            border-radius: 5px;
         }
 
         .nav-item > a:hover {
-            opacity: 0.7;
+            background: var(--white-alpha);
+            transform: translateY(-2px);
         }
 
         .nav-item i {
@@ -116,25 +127,31 @@
             gap: 2rem;
             max-width: 800px;
             margin: 0 auto;
+            background: var(--white-alpha);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .section-item {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--text-pink);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-standard);
             text-align: center;
             flex: 1;
             padding: 0.5rem 1rem;
+            border-radius: 5px;
         }
 
         .section-item:hover {
             color: var(--active-pink);
             transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .section-divider {
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: var(--text-pink);
             padding: 0 1rem;
         }
@@ -142,10 +159,17 @@
         .content-section {
             display: none;
             padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--white-alpha);
             border-radius: 10px;
             margin-top: 2rem;
             text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            margin-bottom: 2rem;
+            color: var(--active-pink);
+            font-size: 1.8rem;
         }
 
         .content-section.active {
@@ -164,18 +188,20 @@
         }
 
         .product-card {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 10px;
             padding: 1rem;
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: var(--transition-standard);
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .product-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .product-image {
@@ -184,54 +210,21 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .product-title {
             font-size: 1rem;
             color: var(--text-pink);
             margin: 0.5rem 0;
+            min-height: 2.4em;
+            line-height: 1.2;
         }
 
         .product-price {
             font-weight: bold;
             color: var(--active-pink);
-        }
-
-        .add-product-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: var(--text-pink);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background-color 0.3s ease;
-        }
-
-        .add-product-btn:hover {
-            background: var(--active-pink);
-        }
-
-        .footer {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            padding: 1rem;
-            text-align: center;
-            border-top: 2px solid var(--text-pink);
-            color: var(--text-pink);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
+            font-size: 1.1rem;
         }
 
         .mobile-menu-btn {
@@ -241,15 +234,27 @@
             cursor: pointer;
             padding: 0.5rem;
             color: var(--text-pink);
+            transition: var(--transition-standard);
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
         }
 
         .mobile-menu-btn i {
             color: var(--text-pink);
+            font-size: 1.5rem;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { 
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 1200px) {
@@ -275,13 +280,14 @@
                 right: -100%;
                 width: 80%;
                 height: 100vh;
-                background: rgba(255, 255, 255, 0.9);
+                background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
                 padding: 5rem 1rem 1rem;
                 flex-direction: column;
                 transition: right 0.3s ease;
                 border-left: 2px solid var(--text-pink);
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
             }
 
             .nav-links.active {
@@ -293,13 +299,20 @@
                 text-align: center;
             }
 
+            .nav-item > a {
+                padding: 1rem;
+                justify-content: center;
+            }
+
             .sections-wrapper {
                 flex-direction: column;
                 gap: 1rem;
             }
 
             .section-item {
-                font-size: 1rem;
+                width: 100%;
+                font-size: 1.1rem;
+                padding: 0.8rem;
             }
 
             .section-divider {
@@ -308,12 +321,31 @@
 
             .product-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .content-section {
+                padding: 1rem;
             }
         }
 
         @media (max-width: 480px) {
             .product-grid {
                 grid-template-columns: 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .nav-content {
+                padding: 0 0.5rem;
+            }
+
+            .profile-mini span {
+                font-size: 0.9rem;
+            }
+
+            .content-section h2 {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -338,25 +370,25 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://www.facebook.com/profile.php?id=61572436656969" target="_blank">
+                            <a href="https://www.facebook.com/profile.php?id=61572436656969" target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-facebook"></i>
                                 Facebook
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://www.instagram.com/encant.eterno" target="_blank">
+                            <a href="https://www.instagram.com/encant.eterno" target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-instagram"></i>
                                 Instagram
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://www.tiktok.com/@krn_nld" target="_blank">
+                            <a href="https://www.tiktok.com/@krn_nld" target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-tiktok"></i>
                                 TikTok
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://wa.me/51908529628" target="_blank">
+                            <a href="https://wa.me/51908529628" target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-whatsapp"></i>
                                 WhatsApp
                             </a>
@@ -385,37 +417,42 @@
                 <h2>Flores Eternas</h2>
                 <div class="product-grid" id="flores-grid">
                 </div>
-                <button class="add-product-btn" onclick="showAddProductForm('flores')">
-                    <i class="fas fa-plus"></i>
-                </button>
             </div>
             
             <div id="bocaditos-content" class="content-section">
                 <h2>Bocaditos Especiales</h2>
                 <div class="product-grid" id="bocaditos-grid">
                 </div>
-                <button class="add-product-btn" onclick="showAddProductForm('bocaditos')">
-                    <i class="fas fa-plus"></i>
-                </button>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <p>GODNESS PROJECTS © MADE WITH 💜 BY DARKGOD14 | 2025 ☢ ALL RIGHTS RESERVED</p>
-    </footer>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             loadInitialProducts();
-            showSection('flores');
+            
+            const lastActiveSection = localStorage.getItem('activeSection') || 'flores';
+            showSection(lastActiveSection);
             
             const menuBtn = document.querySelector('.mobile-menu-btn');
             const navLinks = document.querySelector('.nav-links');
             
             if (menuBtn && navLinks) {
-                menuBtn.addEventListener('click', () => {
+                menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     navLinks.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                        navLinks.classList.remove('active');
+                    }
+                });
+                
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                    });
                 });
             }
         });
@@ -424,25 +461,22 @@
             const card = document.createElement('div');
             card.className = 'product-card';
             
-            card.innerHTML = `
-                <img src="${imageUrl}" alt="${title}" class="product-image">
+            const img = new Image();
+            img.src = imageUrl;
+            img.className = 'product-image';
+            img.alt = title;
+            img.onerror = function() {
+                this.src = '/api/placeholder/200/200';
+                this.alt = 'Imagen no disponible';
+            };
+			
+        card.appendChild(img);
+            card.innerHTML += `
                 <h3 class="product-title">${title}</h3>
                 <p class="product-price">S/. ${price}</p>
             `;
             
             return card;
-        }
-
-        function showAddProductForm(section) {
-            const imageUrl = prompt('URL de la imagen:');
-            const title = prompt('Título del producto:');
-            const price = prompt('Precio del producto:');
-            
-            if (imageUrl && title && price) {
-                const grid = document.getElementById(`${section}-grid`);
-                const card = createProductCard(imageUrl, title, price);
-                grid.appendChild(card);
-            }
         }
 
         function loadInitialProducts() {
@@ -462,17 +496,28 @@
                 { url: '/images/03.jpg', title: 'Mini Brownies x15', price: '29.90' },
                 { url: '/images/04.jpg', title: 'Cupcakes x6', price: '39.90' },
                 { url: '/images/05.jpg', title: 'Cake Pops x8', price: '27.90' },
+                { url: '/images/06.jpg', title: 'Alfajores x12', price: '24.90' },
+                { url: '/images/07.jpg', title: 'Trufas x24', price: '34.90' },
+                { url: '/images/08.jpg', title: 'Mini Brownies x15', price: '29.90' },
+                { url: '/images/09.jpg', title: 'Cupcakes x6', price: '39.90' },
+                { url: '/images/10.jpg', title: 'Cake Pops x8', price: '27.90' }
             ];
 
-            floresProducts.forEach(product => {
-                const card = createProductCard(product.url, product.title, product.price);
-                floresGrid.appendChild(card);
-            });
+            if (floresGrid) {
+                floresGrid.innerHTML = '';
+                floresProducts.forEach(product => {
+                    const card = createProductCard(product.url, product.title, product.price);
+                    floresGrid.appendChild(card);
+                });
+            }
 
-            bocaditosProducts.forEach(product => {
-                const card = createProductCard(product.url, product.title, product.price);
-                bocaditosGrid.appendChild(card);
-            });
+            if (bocaditosGrid) {
+                bocaditosGrid.innerHTML = '';
+                bocaditosProducts.forEach(product => {
+                    const card = createProductCard(product.url, product.title, product.price);
+                    bocaditosGrid.appendChild(card);
+                });
+            }
         }
 
         function showSection(sectionId) {
@@ -480,10 +525,10 @@
             sections.forEach(section => section.classList.remove('active'));
             
             const selectedSection = document.getElementById(`${sectionId}-content`);
-            if (selectedSection.classList.contains('active')) {
-                selectedSection.classList.remove('active');
-            } else {
+            if (selectedSection) {
                 selectedSection.classList.add('active');
+                // Guardar la sección activa
+                localStorage.setItem('activeSection', sectionId);
             }
             
             const items = document.querySelectorAll('.section-item');
@@ -497,4 +542,4 @@
         }
     </script>
 </body>
-</html>
+</html>			
