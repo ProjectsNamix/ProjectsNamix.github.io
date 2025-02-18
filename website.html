@@ -213,6 +213,20 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
+        .product-image-placeholder {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: #8b5c5c;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
         .product-title {
             font-size: 1rem;
             color: var(--text-pink);
@@ -553,6 +567,11 @@
     </main>
 
     <script>
+        const imageCache = {};
+        let activeImageRequests = 0;
+        const MAX_CONCURRENT_REQUESTS = 5;
+        const REQUEST_DELAY = 100; // ms entre solicitudes
+
         document.addEventListener('DOMContentLoaded', function() {
             loadInitialProducts();
             
@@ -569,7 +588,7 @@
                 });
                 
                 document.addEventListener('click', (e) => {
-					if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                    if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
                         navLinks.classList.remove('active');
                     }
                 });
@@ -586,17 +605,21 @@
             const card = document.createElement('div');
             card.className = 'product-card';
             
-            const img = new Image();
-            img.src = imageUrl;
-            img.className = 'product-image';
-            img.alt = title;
-            
-            img.onerror = function() {
-                this.src = 'images/placeholder.jpg';
-                this.alt = 'Imagen no disponible';
-            };
-            
-            card.appendChild(img);
+            if (imageUrl && imageUrl !== 'null' && imageUrl !== 'undefined') {
+                if (imageCache[imageUrl] === 'error') {
+                    const placeholderDiv = document.createElement('div');
+                    placeholderDiv.className = 'product-image-placeholder';
+                    placeholderDiv.textContent = 'Imagen no disponible';
+                    card.appendChild(placeholderDiv);
+                } else {
+                    loadImageWithBackoff(imageUrl, card, title);
+                }
+            } else {
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'product-image-placeholder';
+                placeholderDiv.textContent = 'Imagen no disponible';
+                card.appendChild(placeholderDiv);
+            }
             
             const titleEl = document.createElement('h3');
             titleEl.className = 'product-title';
@@ -620,6 +643,56 @@
             return card;
         }
 
+        function loadImageWithBackoff(imageUrl, card, title) {
+            // Comprobar si la imagen ya está en caché
+            if (imageCache[imageUrl] === 'loaded') {
+                const img = new Image();
+                img.src = imageUrl;
+                img.className = 'product-image';
+                img.alt = title;
+                card.insertBefore(img, card.firstChild);
+                return;
+            }
+            
+            // Si hay demasiadas solicitudes activas, esperar
+            if (activeImageRequests >= MAX_CONCURRENT_REQUESTS) {
+                setTimeout(() => loadImageWithBackoff(imageUrl, card, title), REQUEST_DELAY);
+                return;
+            }
+            
+            activeImageRequests++;
+            
+            const img = new Image();
+            img.className = 'product-image';
+            img.alt = title;
+            
+            img.onload = function() {
+                imageCache[imageUrl] = 'loaded';
+                activeImageRequests--;
+            };
+            
+            img.onerror = function() {
+                // Si falla, crear un placeholder y marcar como error en caché
+                imageCache[imageUrl] = 'error';
+                activeImageRequests--;
+                
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'product-image-placeholder';
+                placeholderDiv.textContent = 'Imagen no disponible';
+                
+                if (img.parentNode) {
+                    // Reemplazar la imagen rota con el placeholder
+                    img.parentNode.replaceChild(placeholderDiv, img);
+                } else {
+                    // Si todavía no se ha añadido la imagen al DOM
+                    card.insertBefore(placeholderDiv, card.firstChild);
+                }
+            };
+            
+            img.src = imageUrl;
+            card.insertBefore(img, card.firstChild);
+        }
+
         function loadInitialProducts() {
             const floresGrid = document.getElementById('flores-grid');
             const floresProducts = [
@@ -632,33 +705,41 @@
 
             const bocaditosGrid = document.getElementById('bocaditos-grid');
             const bocaditosProducts = [
-                { url: '/images/01.jpg', title: 'Alfajores x12', price: '24.90' },
-                { url: '/images/02.jpg', title: 'Trufas x24', price: '34.90' },
-                { url: '/images/03.jpg', title: 'Mini Brownies x15', price: '29.90' },
-                { url: '/images/04.jpg', title: 'Cupcakes x6', price: '39.90' },
-                { url: '/images/05.jpg', title: 'Cake Pops x8', price: '27.90' },
-                { url: '/images/06.jpg', title: 'Alfajores x12', price: '24.90' },
-                { url: '/images/07.jpg', title: 'Trufas x24', price: '34.90' },
-                { url: '/images/08.jpg', title: 'Mini Brownies x15', price: '29.90' },
-                { url: '/images/09.jpg', title: 'Cupcakes x6', price: '39.90' },
-                { url: '/images/10.jpg', title: 'Cake Pops x8', price: '27.90' }
+                { url: 'images/bocaditos/alfajores.jpg', title: 'Alfajores x12', price: '24.90' },
+                { url: 'images/bocaditos/trufas.jpg', title: 'Trufas x24', price: '34.90' },
+                { url: 'images/bocaditos/brownies.jpg', title: 'Mini Brownies x15', price: '29.90' },
+                { url: 'images/bocaditos/cupcakes.jpg', title: 'Cupcakes x6', price: '39.90' },
+                { url: 'images/bocaditos/cakepops.jpg', title: 'Cake Pops x8', price: '27.90' },
+                { url: 'images/bocaditos/alfajores2.jpg', title: 'Alfajores x12', price: '24.90' },
+                { url: 'images/bocaditos/trufas2.jpg', title: 'Trufas x24', price: '34.90' },
+                { url: 'images/bocaditos/brownies2.jpg', title: 'Mini Brownies x15', price: '29.90' },
+                { url: 'images/bocaditos/cupcakes2.jpg', title: 'Cupcakes x6', price: '39.90' },
+                { url: 'images/bocaditos/cakepops2.jpg', title: 'Cake Pops x8', price: '27.90' }
             ];
 
+            // Cargar productos con retraso progresivo para flores
             if (floresGrid) {
                 floresGrid.innerHTML = '';
-                floresProducts.forEach(product => {
-                    const card = createProductCard(product.url, product.title, product.price);
-                    floresGrid.appendChild(card);
-                });
+                loadProductsWithDelay(floresProducts, floresGrid);
             }
 
+            // Cargar productos con retraso progresivo para bocaditos
             if (bocaditosGrid) {
                 bocaditosGrid.innerHTML = '';
-                bocaditosProducts.forEach(product => {
-                    const card = createProductCard(product.url, product.title, product.price);
-                    bocaditosGrid.appendChild(card);
-                });
+                loadProductsWithDelay(bocaditosProducts, bocaditosGrid);
             }
+        }
+
+        function loadProductsWithDelay(products, gridElement) {
+            let delay = 0;
+            
+            products.forEach(product => {
+                setTimeout(() => {
+                    const card = createProductCard(product.url, product.title, product.price);
+                    gridElement.appendChild(card);
+                }, delay);
+                delay += 100; // Aumenta el retardo en 100ms para cada producto
+            });
         }
 
         function showSection(sectionId) {
