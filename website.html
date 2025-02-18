@@ -225,6 +225,25 @@
             font-weight: bold;
             color: var(--active-pink);
             font-size: 1.1rem;
+            margin-bottom: 1rem; /* Añadimos margen abajo del precio para el botón */
+        }
+
+        /* Estilo del botón comprar */
+        .buy-button {
+            background-color: var(--text-pink);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition-standard);
+            margin-top: auto; /* Empuja el botón hacia abajo */
+        }
+
+        .buy-button:hover {
+            background-color: var(--active-pink);
+            transform: scale(1.05);
         }
 
         .mobile-menu-btn {
@@ -418,6 +437,11 @@
                 font-size: 1rem;
                 margin-top: 0.3rem;
             }
+
+            .buy-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -567,7 +591,6 @@
             img.className = 'product-image';
             img.alt = title;
             
-            // Mejorar el manejo de errores de imagen
             img.onerror = function() {
                 this.src = 'images/placeholder.jpg';
                 this.alt = 'Imagen no disponible';
@@ -583,8 +606,16 @@
             priceEl.className = 'product-price';
             priceEl.textContent = `S/. ${price}`;
             
+            const buyButton = document.createElement('button');
+            buyButton.className = 'buy-button';
+            buyButton.textContent = 'Comprar';
+            buyButton.onclick = function() {
+                window.location.href = `https://wa.me/51908529628?text=Hola, estoy interesado en comprar: ${title} - S/. ${price}`;
+            };
+            
             card.appendChild(titleEl);
             card.appendChild(priceEl);
+            card.appendChild(buyButton);
             
             return card;
         }
